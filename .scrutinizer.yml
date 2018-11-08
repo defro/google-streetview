@@ -17,5 +17,15 @@ checks:
         fix_identation_4spaces: true
         fix_doc_comments: true
 
-tools:
-    external_code_coverage: true
+build:
+    nodes:
+        coverage:
+            tests:
+                override:
+                    - command: vendor/bin/phpunit
+                    coverage:
+                        file: tmp/coverage.xml
+                        format: clover
+
+#tools:
+#    external_code_coverage: true
