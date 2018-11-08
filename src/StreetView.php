@@ -58,6 +58,7 @@ class StreetView
 
     /**
      * StreetView constructor.
+     *
      * @param Client $client
      */
     public function __construct(Client $client)
@@ -66,6 +67,8 @@ class StreetView
     }
 
     /**
+     * API key from your Google console
+     *
      * @param string $apiKey
      * @return $this
      */
@@ -149,7 +152,7 @@ class StreetView
 
     /**
      * Indicates the compass heading of the camera.
-     * Accepted values are from 0 to 360 (both values indicating North, with 90 indicating East, and 180 South)
+     * Accepted values are from 0 to 360 (both values indicating North, with 90 indicating East, and 180 South).
      *
      * @param int $heading
      * @return $this
@@ -232,7 +235,7 @@ class StreetView
     }
 
     /**
-     * Digital signature used to verify that any site generating requests
+     * Digital signature used to verify that any site generating requests.
      *
      * @param string $signature
      * @return $this
@@ -245,7 +248,7 @@ class StreetView
     }
 
     /**
-     * Returns URL to a static (non-interactive) Street View panorama or thumbnail
+     * Returns URL to a static (non-interactive) Street View panorama or thumbnail.
      *
      * @param string $address
      * @return string
@@ -386,11 +389,11 @@ class StreetView
     protected function formatMetadataResponse($response): array
     {
         return [
-            'lat' => $response->location->lat,
-            'lng' => $response->location->lng,
-            'date' => $response->date,
-            'copyright' => $response->copyright,
-            'panoramaId' => $response->pano_id
+            'lat'           => $response->location->lat,
+            'lng'           => $response->location->lng,
+            'date'          => $response->date,
+            'copyright'     => $response->copyright,
+            'panoramaId'    => $response->pano_id
         ];
     }
 
@@ -402,12 +405,12 @@ class StreetView
     private function getRequestParameters(array $parameters): array
     {
         $defaultParameters = [
-            'key' => $this->apiKey,
-            'size' => $this->imageWidth . 'x' . $this->imageHeight,
-            'fov' => $this->fov,
-            'pitch' => $this->pitch,
-            'radius' => $this->radius,
-            'source' => $this->source
+            'key'       => $this->apiKey,
+            'size'      => $this->imageWidth . 'x' . $this->imageHeight,
+            'fov'       => $this->fov,
+            'pitch'     => $this->pitch,
+            'radius'    => $this->radius,
+            'source'    => $this->source
         ];
 
         // optional parameters which have not default value
