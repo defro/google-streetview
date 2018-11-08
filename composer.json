@@ -1,0 +1,46 @@
+{
+    "name": "defro/google-streetview",
+    "description": "Google StreetView photo service by API provide metadata request and get static image url by location (address), panorama ID or latitude & longitude",
+    "homepage": "https://github.com/defro/google-streeview",
+    "keywords":
+        [
+            "google",
+            "google-streetview",
+            "location",
+            "street-view",
+            "photo"
+        ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joël Gaujard",
+            "email": "j.gaujard@gmail.com",
+            "role": "Developer",
+            "homepage": "https://defro.github.io"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "~6.0"
+
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.4",
+        "vlucas/phpdotenv": "^2.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Defro\\Google\\StreetView\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Defro\\Google\\StreetView\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "minimum-stability": "stable"
+}
