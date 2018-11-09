@@ -2,26 +2,36 @@
 
 namespace Defro\Google\StreetView\Tests;
 
-use Dotenv\Dotenv;
+use Defro\Google\StreetView\StreetView;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
 class TestCase extends PHPUnitTestCase
 {
-    protected function setUp()
+    /** @var StreetView */
+    protected $streetView;
+
+    protected function setUpMockEnvironment()
     {
         parent::setUp();
 
-        $this->loadEnvironmentVariables();
-    }
+        // load environment file
+        if (!file_exists(__DIR__.'/../.env')) {
+            $this->markTestSkipped('No environment file was provided.');
+            return;
+        }
+        $dotEnv = new Dotenv(__DIR__.'/..');
+        $dotEnv->load();
 
-    protected function loadEnvironmentVariables()
-    {
-        if (! file_exists(__DIR__.'/../.env')) {
+        $apiKey = getenv('GOOGLE_API_KEY');
+
+        if (!$apiKey) {
+            $this->markTestSkipped('No Google API key was provided.');
             return;
         }
 
-        $dotEnv = new Dotenv(__DIR__.'/..');
-
-        $dotEnv->load();
+        $client = new Client();
+        $this->streetView = new StreetView($client);
+        $this->streetView->setApiKey($apiKey);
     }
+
 }

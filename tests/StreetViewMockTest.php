@@ -3,31 +3,30 @@
 namespace Defro\Google\StreetView\Tests;
 
 use Defro\Google\StreetView\GoogleStreetViewException;
-use GuzzleHttp\Client;
 use Defro\Google\StreetView\StreetView;
 
-class StreetViewTest extends TestCase
+class StreetViewMockTest extends TestCase
 {
-    /** @var \Defro\Google\StreetView\StreetView */
-    protected $streetView;
-
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
 
-        $client = new Client();
+        $this->streetView = $this->createMock(StreetView::class);
 
-        $this->streetView = new StreetView($client);
+        $return = [
+            'lat'           => 48.8578126,
+            'lng'           => 2.2952229,
+            'date'          => '2016-05',
+            'copyright'     => '© Руслан К',
+            'panoramaId'    => 'CAoSLEFGMVFpcE81ZzI0OW9qU3lGeFVkV0kwLVJVZGwyNVl6c2FWVnJOYnJySmt4'
+        ];
 
-        $apiKey = getenv('GOOGLE_API_KEY');
+        $this->streetView
+            ->method('getMetadata')
+            //->with('Statue of Liberty National Monument')
+            ->will($this->onConsecutiveCalls($return, []))
+        ;
 
-        if (!$apiKey) {
-            $this->markTestSkipped('No Google API key was provided.');
-
-            return;
-        }
-
-        $this->streetView->setApiKey($apiKey);
     }
 
     public function testGetMetadata()
