@@ -2,13 +2,13 @@
 
 namespace Defro\Google\StreetView\Tests;
 
-use Defro\Google\StreetView\GoogleStreetViewException;
+use Defro\Google\StreetView\Exception\UnexpectedStatusException;
 use GuzzleHttp\Client;
-use Defro\Google\StreetView\StreetView;
+use Defro\Google\StreetView\Api;
 
 class StreetViewTest extends TestCase
 {
-    /** @var \Defro\Google\StreetView\StreetView */
+    /** @var \Defro\Google\StreetView\Api */
     protected $streetView;
 
     public function setUp()
@@ -17,7 +17,7 @@ class StreetViewTest extends TestCase
 
         $client = new Client();
 
-        $this->streetView = new StreetView($client);
+        $this->streetView = new Api($client);
 
         $apiKey = getenv('GOOGLE_API_KEY');
 
@@ -43,13 +43,13 @@ class StreetViewTest extends TestCase
 
     public function testGetMetadataExceptions()
     {
-        $this->expectException(GoogleStreetViewException::class);
-        $result = $this->streetView->getMetadata('A place where I will got an error');
+        $this->expectException(UnexpectedStatusException::class);
+        $this->streetView->getMetadata('A place where I will got an error');
     }
 
-    public function testGetImageUrlByAddress()
+    public function testGetImageUrlByLocation()
     {
-        $result = $this->streetView->getImageUrlByAddress('Statue of Liberty National Monument');
+        $result = $this->streetView->getImageUrlByLocation('Statue of Liberty National Monument');
         $this->assertStringStartsWith('https://', $result);
     }
 

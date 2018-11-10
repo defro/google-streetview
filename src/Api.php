@@ -2,10 +2,14 @@
 
 namespace Defro\Google\StreetView;
 
+use Defro\Google\StreetView\Exception\BadStatusCodeException;
+use Defro\Google\StreetView\Exception\RequestException;
+use Defro\Google\StreetView\Exception\UnexpectedStatusException;
+use Defro\Google\StreetView\Exception\UnexpectedValueException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
-class StreetView
+class Api
 {
     /** @var \GuzzleHttp\Client */
     private $client;
@@ -22,18 +26,6 @@ class StreetView
     /** @var string */
     private $signature;
 
-    /** @var string */
-    private $location;
-
-    /** @var float */
-    private $latitude;
-
-    /** @var float */
-    private $longitude;
-
-    /** @var int */
-    private $panoramaId;
-
     /** @var int */
     private $imageWidth = 600;
 
@@ -44,10 +36,10 @@ class StreetView
     private $heading;
 
     /** @var int */
-    private $fov = 90;
+    private $cameraFov = 90;
 
     /** @var int */
-    private $pitch = 0;
+    private $cameraPitch = 0;
 
     /** @var int */
     private $radius = 50;
@@ -57,7 +49,7 @@ class StreetView
 
 
     /**
-     * StreetView constructor.
+     * Api constructor.
      *
      * @param Client $client
      */
@@ -72,9 +64,22 @@ class StreetView
      * @param string $apiKey
      * @return $this
      */
-    public function setApiKey(string $apiKey)
+    public function setApiKey(string $apiKey): self
     {
         $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
+    /**
+     * Digital signature used to verify that any site generating requests.
+     *
+     * @param string $signature
+     * @return $this
+     */
+    public function setSignature(string $signature): self
+    {
+        $this->signature = $signature;
 
         return $this;
     }
@@ -85,17 +90,19 @@ class StreetView
      * When dealing with a fixed-size viewport, as with a Street View image of a set size,
      * field of view in essence represents zoom, with smaller numbers indicating a higher level of zoom.
      *
-     * @param int $fov
+     * @param int $cameraFov
      * @return $this
-     * @throws GoogleStreetViewException
+     * @throws UnexpectedValueException
      */
-    public function setFov(int $fov):self
+    public function setCameraFov(int $cameraFov): self
     {
-        if ($fov > 120) {
-            throw new GoogleStreetViewException('FOV value cannot exceed 120 degrees.');
+        if ($cameraFov > 120) {
+            throw new UnexpectedValueException(
+                'Camera FOV value cannot exceed 120 degrees.'
+            );
         }
 
-        $this->fov = $fov;
+        $this->cameraFov = $cameraFov;
 
         return $this;
     }
@@ -106,24 +113,24 @@ class StreetView
      * Positive values angle the camera up (with 90 degrees indicating straight up);
      * negative values angle the camera down (with -90 indicating straight down).
      *
-     * @param int $pitch
+     * @param int $cameraPitch
      * @return $this
-     * @throws GoogleStreetViewException
+     * @throws UnexpectedValueException
      */
-    public function setPitch(int $pitch):self
+    public function setCameraPitch(int $cameraPitch):self
     {
-        if ($pitch > 90) {
-            throw new GoogleStreetViewException(
-                'Pitch value for Google Street View cannot exceed 90 degrees.'
+        if ($cameraPitch > 90) {
+            throw new UnexpectedValueException(
+                'Camera pitch value for Google Street View cannot exceed 90 degrees.'
             );
         }
-        if ($pitch < -90) {
-            throw new GoogleStreetViewException(
-                'Pitch value for Google Street View cannot be inferior of -90 degrees.'
+        if ($cameraPitch < -90) {
+            throw new UnexpectedValueException(
+                'Camera pitch value for Google Street View cannot be inferior of -90 degrees.'
             );
         }
 
-        $this->pitch = $pitch;
+        $this->cameraPitch = $cameraPitch;
 
         return $this;
     }
@@ -135,12 +142,12 @@ class StreetView
      *
      * @param int $radius
      * @return $this
-     * @throws GoogleStreetViewException
+     * @throws UnexpectedValueException
      */
     public function setRadius(int $radius): self
     {
         if ($radius < 0) {
-            throw new GoogleStreetViewException(
+            throw new UnexpectedValueException(
                 'Radius value cannot be negative.'
             );
         }
@@ -156,17 +163,17 @@ class StreetView
      *
      * @param int $heading
      * @return $this
-     * @throws GoogleStreetViewException
+     * @throws UnexpectedValueException
      */
     public function setHeading(int $heading): self
     {
         if ($heading < 0) {
-            throw new GoogleStreetViewException(
+            throw new UnexpectedValueException(
                 'Heading value cannot be inferior to zero degree.'
             );
         }
         if ($heading > 360) {
-            throw new GoogleStreetViewException(
+            throw new UnexpectedValueException(
                 'Heading value cannot exceed 360 degrees.'
             );
         }
@@ -183,13 +190,13 @@ class StreetView
      *
      * @param string $source
      * @return $this
-     * @throws GoogleStreetViewException
+     * @throws UnexpectedValueException
      */
     public function setSource(string $source): self
     {
         if ($source !== 'default' || $source !== 'outdoor') {
-            throw new GoogleStreetViewException(
-                'Source value is unknown.'
+            throw new UnexpectedValueException(
+                'Source value is unknown, "default" or "outdoor" values expected.'
             );
         }
 
@@ -201,12 +208,12 @@ class StreetView
     /**
      * @param int $height
      * @return $this
-     * @throws GoogleStreetViewException
+     * @throws UnexpectedValueException
      */
     public function setImageHeight(int $height): self
     {
         if ($height < 1) {
-            throw new GoogleStreetViewException(
+            throw new UnexpectedValueException(
                 'Image height value cannot be negative or equal to zero.'
             );
         }
@@ -219,12 +226,12 @@ class StreetView
     /**
      * @param int $width
      * @return $this
-     * @throws GoogleStreetViewException
+     * @throws UnexpectedValueException
      */
-    public function setImageWidth(int $width)
+    public function setImageWidth(int $width): self
     {
         if ($width < 1) {
-            throw new GoogleStreetViewException(
+            throw new UnexpectedValueException(
                 'Image height value cannot be negative or equal to zero.'
             );
         }
@@ -235,29 +242,16 @@ class StreetView
     }
 
     /**
-     * Digital signature used to verify that any site generating requests.
-     *
-     * @param string $signature
-     * @return $this
-     */
-    public function setSignature(string $signature)
-    {
-        $this->signature = $signature;
-
-        return $this;
-    }
-
-    /**
      * Returns URL to a static (non-interactive) Street View panorama or thumbnail.
      *
-     * @param string $address
+     * @param string $location
      * @return string
-     * @throws GoogleStreetViewException
+     * @throws BadStatusCodeException
      */
-    public function getImageUrlByAddress(string $address)
+    public function getImageUrlByLocation(string $location): string
     {
         $parameters = $this->getRequestParameters([
-            'location' => $address
+            'location' => $location
         ]);
 
         return $this->getImageUrl($parameters);
@@ -269,12 +263,12 @@ class StreetView
      * @param float $latitude
      * @param float $longitude
      * @return string
-     * @throws GoogleStreetViewException
+     * @throws BadStatusCodeException
      */
-    public function getImageUrlByLatitudeAndLongitude(float $latitude, float $longitude)
+    public function getImageUrlByLatitudeAndLongitude(float $latitude, float $longitude): string
     {
         $parameters = $this->getRequestParameters([
-            'location' => $latitude . ', ' . $longitude
+            'location' => $latitude . ',' . $longitude
         ]);
 
         return $this->getImageUrl($parameters);
@@ -285,9 +279,9 @@ class StreetView
      *
      * @param string $panoramaId
      * @return string
-     * @throws GoogleStreetViewException
+     * @throws BadStatusCodeException
      */
-    public function getImageUrlByPanoramaId(string $panoramaId)
+    public function getImageUrlByPanoramaId(string $panoramaId): string
     {
         $parameters = $this->getRequestParameters([
             'pano' => $panoramaId
@@ -302,19 +296,22 @@ class StreetView
      *
      * @param array $parameters
      * @return string
-     * @throws GoogleStreetViewException
+     * @throws BadStatusCodeException
      */
     private function getImageUrl(array $parameters): string
     {
-        $url = $this->endpointImage . '?' . http_build_query($parameters);
+        $uri = $this->endpointImage . '?' . http_build_query($parameters);
 
-        $response = $this->client->get($url);
+        $response = $this->client->get($uri);
 
         if ($response->getStatusCode() !== 200) {
-            throw new GoogleStreetViewException('Could not connect to ' . $this->endpointImage);
+            throw new BadStatusCodeException(
+                'Could not connect to ' . $this->endpointImage,
+                $response->getStatusCode()
+            );
         }
 
-        return $url;
+        return $uri;
     }
 
     /**
@@ -327,13 +324,16 @@ class StreetView
      *
      * @param string $location
      * @return array
-     * @throws GoogleStreetViewException
+     * @throws UnexpectedValueException
+     * @throws RequestException
+     * @throws BadStatusCodeException
+     * @throws UnexpectedStatusException
      */
     public function getMetadata(string $location): array
     {
         if (empty($location)) {
-            throw new GoogleStreetViewException(
-                'Location argument cannot be empty to request Google StreetView metadata.'
+            throw new UnexpectedValueException(
+                'Location argument cannot be empty to request Google Street view API Metadata.'
             );
         }
 
@@ -343,47 +343,57 @@ class StreetView
             $response = $this->client->request('GET', $this->endpointMetadata, $payload);
         }
         catch (GuzzleException $e) {
-            throw new GoogleStreetViewException('Guzzle http client request failed.', 0, $e);
+            throw new RequestException(
+                'Guzzle http client request failed.', $e
+            );
         }
 
         if ($response->getStatusCode() !== 200) {
-            throw new GoogleStreetViewException('Could not connect to ' . $this->endpointMetadata);
+            throw new BadStatusCodeException(
+                'Could not connect to ' . $this->endpointMetadata,
+                $response->getStatusCode()
+            );
         }
 
         $response = json_decode($response->getBody());
 
+        // Indicates that no errors occurred; a panorama is found and metadata is returned.
+        if ($response->status === 'OK') {
+            return $this->formatMetadataResponse($response);
+        }
         // Indicates that no panorama could be found near the provided location.
         // This may occur if a non-existent or invalid panorama ID is given.
         if ($response->status === 'ZERO_RESULTS') {
-            throw new GoogleStreetViewException('Google Street view return zero results.');
+            throw new UnexpectedStatusException('Google Street view return zero results.');
         }
         // Indicates that the address string provided in the location parameter could not be found.
         // This may occur if a non-existent address is given.
         if ($response->status === 'NOT_FOUND') {
-            throw new GoogleStreetViewException('No Google Street view result found.');
+            throw new UnexpectedStatusException('No Google Street view result found.');
         }
         // Indicates that you have exceeded your daily quota or per-second quota for this API.
         if ($response->status === 'OVER_QUERY_LIMIT') {
-            throw new GoogleStreetViewException('Google Street view API quota exceed.');
+            throw new UnexpectedStatusException('Google Street view API quota exceed.');
         }
         // Indicates that your request was denied.
         // This may occur if you did not use an API key or client ID, or
         // if the Street View API is not activated in the Google Cloud Platform Console project containing your API key.
         if ($response->status === 'REQUEST_DENIED') {
-            throw new GoogleStreetViewException('Google Street view denied the request.');
+            throw new UnexpectedStatusException('Google Street view denied the request.');
         }
         // Generally indicates that the query parameters (address or latlng or components) are missing.
         if ($response->status === 'INVALID_REQUEST') {
-            throw new GoogleStreetViewException('Google Street view request is invalid.');
+            throw new UnexpectedStatusException('Google Street view request is invalid.');
         }
         // Indicates that the request could not be processed due to a server error.
         // This is often a temporary status. The request may succeed if you try again.
         if ($response->status === 'UNKNOWN_ERROR') {
-            throw new GoogleStreetViewException('Google Street view unknown error occurred. Please try again.');
+            throw new UnexpectedStatusException('Google Street view unknown error occurred. Please try again.');
         }
 
-        // "OK" 	Indicates that no errors occurred; a panorama is found and metadata is returned.
-        return $this->formatMetadataResponse($response);
+        throw new UnexpectedStatusException(
+            'Google Street view respond an unknown status response : "' . $response->status . '".'
+        );
     }
 
     protected function formatMetadataResponse($response): array
@@ -407,8 +417,8 @@ class StreetView
         $defaultParameters = [
             'key'       => $this->apiKey,
             'size'      => $this->imageWidth . 'x' . $this->imageHeight,
-            'fov'       => $this->fov,
-            'pitch'     => $this->pitch,
+            'fov'       => $this->cameraFov,
+            'pitch'     => $this->cameraPitch,
             'radius'    => $this->radius,
             'source'    => $this->source
         ];
