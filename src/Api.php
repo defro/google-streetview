@@ -11,6 +11,10 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Api
 {
+    const SOURCE_DEFAULT = 'default';
+
+    const SOURCE_OUTDOOR = 'outdoor';
+
     /** @var \GuzzleHttp\Client */
     private $client;
 
@@ -194,10 +198,11 @@ class Api
      */
     public function setSource(string $source): self
     {
-        if ($source !== 'default' || $source !== 'outdoor') {
-            throw new UnexpectedValueException(
-                'Source value is unknown, "default" or "outdoor" values expected.'
-            );
+        if (!in_array($source, [self::SOURCE_DEFAULT, self::SOURCE_OUTDOOR], true)) {
+            throw new UnexpectedValueException(sprintf(
+                'Source value "%s" is unknown, only "%s" or "%s" values expected.',
+                $source, self::SOURCE_DEFAULT, self::SOURCE_OUTDOOR
+            ));
         }
 
         $this->source = $source;

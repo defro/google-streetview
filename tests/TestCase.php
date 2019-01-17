@@ -14,9 +14,9 @@ class TestCase extends PHPUnitTestCase
         $this->loadEnvironmentVariables();
     }
 
-    protected function loadEnvironmentVariables()
+    protected function loadEnvironmentVariables(): void
     {
-        if (! file_exists(__DIR__.'/../.env')) {
+        if (!file_exists(__DIR__.'/../.env')) {
             return;
         }
 
