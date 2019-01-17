@@ -2,38 +2,92 @@
 
 namespace Defro\Google\StreetView\Tests;
 
+use Defro\Google\StreetView\Exception\BadStatusCodeException;
+use Defro\Google\StreetView\Exception\RequestException;
 use Defro\Google\StreetView\Exception\UnexpectedStatusException;
 use Defro\Google\StreetView\Exception\UnexpectedValueException;
 use GuzzleHttp\Client;
 use Defro\Google\StreetView\Api;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\TransferException;
+use GuzzleHttp\Handler\StreamHandler;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 
-class StreetViewTest extends TestCase
+class StreetViewTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var \Defro\Google\StreetView\Api */
-    protected $streetView;
+    private $locationName = 'Statue of Liberty National Monument';
 
-    public function setUp()
+    public function testGetMetadataStatusUnexpectedValueException()
     {
-        parent::setUp();
+        $client = $this->createMock(Client::class);
+        $streetView = new Api($client);
 
-        $client = new Client();
+        $this->expectException(UnexpectedValueException::class);
+        $streetView->getMetadata('');
+    }
 
-        $this->streetView = new Api($client);
+    public function testGetMetadataStatusBadStatusCodeException()
+    {
+        $response = new Response(0);
+        $client = $this->createMock(Client::class);
+        $client->method('request')->willReturn($response);
 
-        $apiKey = getenv('GOOGLE_API_KEY');
+        $streetView = new Api($client);
 
-        if (!$apiKey) {
-            $this->markTestSkipped('No Google API key was provided.');
+        $this->expectException(BadStatusCodeException::class);
+        $streetView->getMetadata($this->locationName);
+    }
 
-            return;
-        }
+    public function testGetMetadataStatusRequestException()
+    {
+        $client = $this->createMock(Client::class);
+        $client->method('request')->willThrowException(
+            new \GuzzleHttp\Exception\RequestException('', new Request('', ''))
+        );
 
-        $this->streetView->setApiKey($apiKey);
+        $streetView = new Api($client);
+
+        $this->expectException(RequestException::class);
+        $streetView->getMetadata($this->locationName);
+    }
+
+    public function testGetMetadataExceptionZeroResults()
+    {
+        $stream = new StreamHandler();
+        $stream->status = 'ZERO_RESULTS';
+        $response = new Response(200, [], json_encode($stream));
+        $client = $this->createMock(Client::class);
+        $client->method('request')->willReturn($response);
+
+        $streetView = new Api($client);
+
+        $this->expectException(UnexpectedStatusException::class);
+        $streetView->getMetadata($this->locationName);
     }
 
     public function testGetMetadata()
     {
-        $result = $this->streetView->getMetadata('Statue of Liberty National Monument');
+        $location = new StreamHandler();
+        $location->lat = 'lat';
+        $location->lng = 'lng';
+
+        $stream = new StreamHandler();
+        $stream->status = 'OK';
+        $stream->location = $location;
+        //$stream->location->lat = 'lat';
+        //$stream->location->lng = 'lng';
+        $stream->date = 'date';
+        $stream->copyright = 'copyright';
+        $stream->pano_id = 'panoramaId';
+        $response = new Response(200, [], json_encode($stream));
+
+        $client = $this->createMock(Client::class);
+        $client->method('request')->willReturn($response);
+
+        $streetView = new Api($client);
+
+        $result = $streetView->getMetadata($this->locationName);
 
         $this->assertArrayHasKey('lat', $result);
         $this->assertArrayHasKey('lng', $result);
@@ -41,13 +95,7 @@ class StreetViewTest extends TestCase
         $this->assertArrayHasKey('copyright', $result);
         $this->assertArrayHasKey('panoramaId', $result);
     }
-
-    public function testGetMetadataStatusException()
-    {
-        $this->expectException(UnexpectedStatusException::class);
-        $this->streetView->getMetadata('A place where I will got an error');
-    }
-
+/*
     public function testGetImageUrlByLocation()
     {
         $result = $this->streetView->getImageUrlByLocation('Statue of Liberty National Monument');
@@ -65,100 +113,5 @@ class StreetViewTest extends TestCase
         $result = $this->streetView->getImageUrlByPanoramaId('Bc-tdEJFUCt21hqBjhY_NQ');
         $this->assertStringStartsWith('https://', $result);
     }
-
-    public function testSetImageWidth()
-    {
-        $result = $this->streetView->setImageWidth(42);
-        $this->assertSame(get_class($result), Api::class);
-    }
-
-    public function testSetImageWidthException()
-    {
-        $this->expectException(UnexpectedValueException::class);
-        $this->streetView->setImageWidth(0);
-    }
-
-    public function testSetImageHeight()
-    {
-        $result = $this->streetView->setImageHeight(42);
-        $this->assertSame(get_class($result), Api::class);
-    }
-
-    public function testSetImageHeightException()
-    {
-        $this->expectException(UnexpectedValueException::class);
-        $this->streetView->setImageHeight(0);
-    }
-
-    public function testSetSource()
-    {
-        $result = $this->streetView->setSource(Api::SOURCE_DEFAULT);
-        $this->assertSame(get_class($result), Api::class);
-    }
-
-    public function testSetSourceException()
-    {
-        $this->expectException(UnexpectedValueException::class);
-        $this->streetView->setSource('unknownSource');
-    }
-
-    public function testSetHeading()
-    {
-        $result = $this->streetView->setHeading(42);
-        $this->assertSame(get_class($result), Api::class);
-    }
-
-    public function testSetHeadingFirstException()
-    {
-        $this->expectException(UnexpectedValueException::class);
-        $this->streetView->setHeading(-42);
-    }
-
-    public function testSetHeadingSecondException()
-    {
-        $this->expectException(UnexpectedValueException::class);
-        $this->streetView->setHeading(420);
-    }
-
-    public function testSetRadius()
-    {
-        $result = $this->streetView->setRadius(42);
-        $this->assertSame(get_class($result), Api::class);
-    }
-
-    public function testSetRadiusException()
-    {
-        $this->expectException(UnexpectedValueException::class);
-        $this->streetView->setRadius(-42);
-    }
-
-    public function testSetCameraPitch()
-    {
-        $result = $this->streetView->setCameraPitch(42);
-        $this->assertSame(get_class($result), Api::class);
-    }
-
-    public function testSetCameraPitchFirstException()
-    {
-        $this->expectException(UnexpectedValueException::class);
-        $this->streetView->setCameraPitch(-100);
-    }
-
-    public function testSetCameraPitchSecondException()
-    {
-        $this->expectException(UnexpectedValueException::class);
-        $this->streetView->setCameraPitch(100);
-    }
-
-    public function testSetCameraFov()
-    {
-        $result = $this->streetView->setCameraFov(42);
-        $this->assertSame(get_class($result), Api::class);
-    }
-
-    public function testSetCameraFovException()
-    {
-        $this->expectException(UnexpectedValueException::class);
-        $this->streetView->setCameraFov(150);
-    }
+*/
 }

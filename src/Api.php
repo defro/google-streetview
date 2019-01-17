@@ -15,14 +15,14 @@ class Api
 
     const SOURCE_OUTDOOR = 'outdoor';
 
-    /** @var \GuzzleHttp\Client */
-    private $client;
-
     /** @var string */
     private $endpointImage = 'https://maps.googleapis.com/maps/api/streetview';
 
     /** @var string */
     private $endpointMetadata = 'https://maps.googleapis.com/maps/api/streetview/metadata';
+
+    /** @var \GuzzleHttp\Client */
+    private $client;
 
     /** @var string */
     private $apiKey;
@@ -336,6 +336,8 @@ class Api
      */
     public function getMetadata(string $location): array
     {
+        $location = trim($location);
+
         if (empty($location)) {
             throw new UnexpectedValueException(
                 'Location argument cannot be empty to request Google Street view API Metadata.'
