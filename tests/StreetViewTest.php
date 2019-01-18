@@ -52,15 +52,69 @@ class StreetViewTest extends \PHPUnit\Framework\TestCase
         $streetView->getMetadata($this->locationName);
     }
 
-    public function testGetMetadataExceptionZeroResults()
+    private function getApiWithStatus(string $status)
     {
         $stream = new StreamHandler();
-        $stream->status = 'ZERO_RESULTS';
+        $stream->status = $status;
         $response = new Response(200, [], json_encode($stream));
         $client = $this->createMock(Client::class);
         $client->method('request')->willReturn($response);
 
-        $streetView = new Api($client);
+        return new Api($client);
+
+    }
+
+    public function testGetMetadataExceptionZeroResults()
+    {
+        $streetView = $this->getApiWithStatus('ZERO_RESULTS');
+
+        $this->expectException(UnexpectedStatusException::class);
+        $streetView->getMetadata($this->locationName);
+    }
+
+    public function testGetMetadataExceptionNotFound()
+    {
+        $streetView = $this->getApiWithStatus('NOT_FOUND');
+
+        $this->expectException(UnexpectedStatusException::class);
+        $streetView->getMetadata($this->locationName);
+    }
+
+    public function testGetMetadataExceptionOverQueryLimit()
+    {
+        $streetView = $this->getApiWithStatus('OVER_QUERY_LIMIT');
+
+        $this->expectException(UnexpectedStatusException::class);
+        $streetView->getMetadata($this->locationName);
+    }
+
+    public function testGetMetadataExceptionRequestDenied()
+    {
+        $streetView = $this->getApiWithStatus('REQUEST_DENIED');
+
+        $this->expectException(UnexpectedStatusException::class);
+        $streetView->getMetadata($this->locationName);
+    }
+
+    public function testGetMetadataExceptionInvalidRequest()
+    {
+        $streetView = $this->getApiWithStatus('INVALID_REQUEST');
+
+        $this->expectException(UnexpectedStatusException::class);
+        $streetView->getMetadata($this->locationName);
+    }
+
+    public function testGetMetadataExceptionUnknownError()
+    {
+        $streetView = $this->getApiWithStatus('UNKNOWN_ERROR');
+
+        $this->expectException(UnexpectedStatusException::class);
+        $streetView->getMetadata($this->locationName);
+    }
+
+    public function testGetMetadataExceptionNonExistentStatus()
+    {
+        $streetView = $this->getApiWithStatus('Non existent status');
 
         $this->expectException(UnexpectedStatusException::class);
         $streetView->getMetadata($this->locationName);
@@ -75,8 +129,6 @@ class StreetViewTest extends \PHPUnit\Framework\TestCase
         $stream = new StreamHandler();
         $stream->status = 'OK';
         $stream->location = $location;
-        //$stream->location->lat = 'lat';
-        //$stream->location->lng = 'lng';
         $stream->date = 'date';
         $stream->copyright = 'copyright';
         $stream->pano_id = 'panoramaId';
@@ -86,6 +138,8 @@ class StreetViewTest extends \PHPUnit\Framework\TestCase
         $client->method('request')->willReturn($response);
 
         $streetView = new Api($client);
+        $streetView->setHeading(1);
+        $streetView->setSignature('signature');
 
         $result = $streetView->getMetadata($this->locationName);
 

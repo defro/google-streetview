@@ -15,9 +15,19 @@ class StreetViewAccessorsTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $client = new Client();
+        $this->streetView = new Api(new Client());
+    }
 
-        $this->streetView = new Api($client);
+    public function testSetApiKey()
+    {
+        $result = $this->streetView->setApiKey('');
+        $this->assertSame(get_class($result), Api::class);
+    }
+
+    public function testSetSignature()
+    {
+        $result = $this->streetView->setSignature('');
+        $this->assertSame(get_class($result), Api::class);
     }
 
     public function testSetImageWidth()
