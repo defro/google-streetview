@@ -350,8 +350,7 @@ class Api
 
         try {
             $response = $this->client->request('GET', $this->endpointMetadata, $payload);
-        }
-        catch (GuzzleException $e) {
+        } catch (GuzzleException $e) {
             throw new RequestException(
                 'Guzzle http client request failed.', $e
             );
@@ -366,42 +365,48 @@ class Api
 
         $response = json_decode($response->getBody());
 
+        // Indicates that no panorama could be found near the provided location.
         // Indicates that no errors occurred; a panorama is found and metadata is returned.
         if ($response->status === 'OK') {
             return $this->formatMetadataResponse($response);
         }
-        // Indicates that no panorama could be found near the provided location.
+
+        $this->handleResponseStatus($response->status);
+    }
+
+    private function handleResponseStatus(string $status)
+    {
         // This may occur if a non-existent or invalid panorama ID is given.
-        if ($response->status === 'ZERO_RESULTS') {
+        if ($status === 'ZERO_RESULTS') {
             throw new UnexpectedStatusException('Google Street view return zero results.');
         }
         // Indicates that the address string provided in the location parameter could not be found.
         // This may occur if a non-existent address is given.
-        if ($response->status === 'NOT_FOUND') {
+        if ($status === 'NOT_FOUND') {
             throw new UnexpectedStatusException('No Google Street view result found.');
         }
         // Indicates that you have exceeded your daily quota or per-second quota for this API.
-        if ($response->status === 'OVER_QUERY_LIMIT') {
+        if ($status === 'OVER_QUERY_LIMIT') {
             throw new UnexpectedStatusException('Google Street view API quota exceed.');
         }
         // Indicates that your request was denied.
         // This may occur if you did not use an API key or client ID, or
         // if the Street View API is not activated in the Google Cloud Platform Console project containing your API key.
-        if ($response->status === 'REQUEST_DENIED') {
+        if ($status === 'REQUEST_DENIED') {
             throw new UnexpectedStatusException('Google Street view denied the request.');
         }
         // Generally indicates that the query parameters (address or latlng or components) are missing.
-        if ($response->status === 'INVALID_REQUEST') {
+        if ($status === 'INVALID_REQUEST') {
             throw new UnexpectedStatusException('Google Street view request is invalid.');
         }
         // Indicates that the request could not be processed due to a server error.
         // This is often a temporary status. The request may succeed if you try again.
-        if ($response->status === 'UNKNOWN_ERROR') {
+        if ($status === 'UNKNOWN_ERROR') {
             throw new UnexpectedStatusException('Google Street view unknown error occurred. Please try again.');
         }
 
         throw new UnexpectedStatusException(
-            'Google Street view respond an unknown status response : "' . $response->status . '".'
+            'Google Street view respond an unknown status response : "' . $status . '".'
         );
     }
 
