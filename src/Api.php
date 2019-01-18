@@ -11,8 +11,10 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Api
 {
+    /** @var string default source */
     const SOURCE_DEFAULT = 'default';
 
+    /** @var string outdoor source */
     const SOURCE_OUTDOOR = 'outdoor';
 
     /** @var string */
