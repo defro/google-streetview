@@ -11,10 +11,10 @@ This package can get street view image from any address to GPS coordinates, loca
 
 ```php
 $client = new \GuzzleHttp\Client();
-$streetView = new \Defro\Google\StreetView\StreetView($client);
+$streetView = new \Defro\Google\StreetView\Api($client);
 $imgUrl = $streetView
     ->setApiKey('YOUR_GOOGLE_API_KEY')
-    ->getImageUrlByAddress('Eiffel tower, Paris');
+    ->getImageUrlByLocation('Eiffel tower, Paris');
 
 echo '<img src="' . $imgUrl . '" />';
 ```
