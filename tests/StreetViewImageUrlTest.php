@@ -2,9 +2,9 @@
 
 namespace Defro\Google\StreetView\Tests;
 
+use Defro\Google\StreetView\Api;
 use Defro\Google\StreetView\Exception\BadStatusCodeException;
 use GuzzleHttp\Client;
-use Defro\Google\StreetView\Api;
 use GuzzleHttp\Psr7\Response;
 
 class StreetViewImageUrlTest extends \PHPUnit\Framework\TestCase
@@ -16,8 +16,7 @@ class StreetViewImageUrlTest extends \PHPUnit\Framework\TestCase
         $client
             ->method('__call')
             ->with($this->equalTo('get'))
-            ->willReturn($response)
-        ;
+            ->willReturn($response);
 
         return new Api($client);
     }
