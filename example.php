@@ -34,7 +34,7 @@ try {
     $metadata = $streetView->getMetadata($locationName);
     echo '<ol>';
     foreach ($metadata as $key => $value) {
-        printf ('<li>%s: %s</li>', $key, $value);
+        printf('<li>%s: %s</li>', $key, $value);
     }
     echo '</ol>';
 } catch (Exception $e) {
