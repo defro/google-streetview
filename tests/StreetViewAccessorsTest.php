@@ -30,6 +30,12 @@ class StreetViewAccessorsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(get_class($result), Api::class);
     }
 
+    public function testSetSigningSecret()
+    {
+        $result = $this->streetView->setSigningSecret('');
+        $this->assertSame(get_class($result), Api::class);
+    }
+
     public function testSetImageWidth()
     {
         $result = $this->streetView->setImageWidth(42);
