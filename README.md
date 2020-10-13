@@ -4,6 +4,8 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Build Status](https://img.shields.io/travis/defro/google-streetview/master.svg?style=flat-square)](https://travis-ci.org/defro/google-streetview)
 [![SymfonyInsight](https://insight.symfony.com/projects/ddc29c00-efed-47f3-aa44-8b5b086a1d6b/mini.svg)](https://insight.symfony.com/projects/ddc29c00-efed-47f3-aa44-8b5b086a1d6b)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/defro/google-streetview/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/defro/google-streetview/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/defro/google-streetview/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/defro/google-streetview/?branch=master)
 [![StyleCI](https://styleci.io/repos/156726302/shield)](https://styleci.io/repos/156726302)
 [![Total Downloads](https://img.shields.io/packagist/dt/defro/google-streetview.svg?style=flat-square)](https://packagist.org/packages/defro/google-streetview)
 
