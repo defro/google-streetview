@@ -2,12 +2,12 @@
 
 namespace Defro\Google\StreetView\Tests;
 
+use Defro\Google\StreetView\Api;
 use Defro\Google\StreetView\Exception\BadStatusCodeException;
 use Defro\Google\StreetView\Exception\RequestException;
 use Defro\Google\StreetView\Exception\UnexpectedStatusException;
 use Defro\Google\StreetView\Exception\UnexpectedValueException;
 use GuzzleHttp\Client;
-use Defro\Google\StreetView\Api;
 use GuzzleHttp\Handler\StreamHandler;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -59,7 +59,6 @@ class StreetViewMetadataTest extends \PHPUnit\Framework\TestCase
         $client->method('request')->willReturn($response);
 
         return new Api($client);
-
     }
 
     public function testGetMetadataExceptionZeroResults()

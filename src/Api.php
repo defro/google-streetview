@@ -53,7 +53,6 @@ class Api
     /** @var string */
     private $source = 'default';
 
-
     /**
      * Api constructor.
      *
@@ -65,9 +64,10 @@ class Api
     }
 
     /**
-     * API key from your Google console
+     * API key from your Google console.
      *
      * @param string $apiKey
+     *
      * @return $this
      */
     public function setApiKey(string $apiKey): self
@@ -81,6 +81,7 @@ class Api
      * Digital signature used to verify that any site generating requests.
      *
      * @param string $signature
+     *
      * @return $this
      */
     public function setSignature(string $signature): self
@@ -97,8 +98,10 @@ class Api
      * field of view in essence represents zoom, with smaller numbers indicating a higher level of zoom.
      *
      * @param int $cameraFov
-     * @return $this
+     *
      * @throws UnexpectedValueException
+     *
+     * @return $this
      */
     public function setCameraFov(int $cameraFov): self
     {
@@ -120,10 +123,12 @@ class Api
      * negative values angle the camera down (with -90 indicating straight down).
      *
      * @param int $cameraPitch
-     * @return $this
+     *
      * @throws UnexpectedValueException
+     *
+     * @return $this
      */
-    public function setCameraPitch(int $cameraPitch):self
+    public function setCameraPitch(int $cameraPitch): self
     {
         if ($cameraPitch > 90) {
             throw new UnexpectedValueException(
@@ -147,8 +152,10 @@ class Api
      * Valid values are non-negative integers.
      *
      * @param int $radius
-     * @return $this
+     *
      * @throws UnexpectedValueException
+     *
+     * @return $this
      */
     public function setRadius(int $radius): self
     {
@@ -168,8 +175,10 @@ class Api
      * Accepted values are from 0 to 360 (both values indicating North, with 90 indicating East, and 180 South).
      *
      * @param int $heading
-     * @return $this
+     *
      * @throws UnexpectedValueException
+     *
+     * @return $this
      */
     public function setHeading(int $heading): self
     {
@@ -195,15 +204,19 @@ class Api
      *  - outdoor limits searches to outdoor collections.
      *
      * @param string $source
-     * @return $this
+     *
      * @throws UnexpectedValueException
+     *
+     * @return $this
      */
     public function setSource(string $source): self
     {
         if (!in_array($source, [self::SOURCE_DEFAULT, self::SOURCE_OUTDOOR], true)) {
             throw new UnexpectedValueException(sprintf(
                 'Source value "%s" is unknown, only "%s" or "%s" values expected.',
-                $source, self::SOURCE_DEFAULT, self::SOURCE_OUTDOOR
+                $source,
+                self::SOURCE_DEFAULT,
+                self::SOURCE_OUTDOOR
             ));
         }
 
@@ -214,8 +227,10 @@ class Api
 
     /**
      * @param int $height
-     * @return $this
+     *
      * @throws UnexpectedValueException
+     *
+     * @return $this
      */
     public function setImageHeight(int $height): self
     {
@@ -232,8 +247,10 @@ class Api
 
     /**
      * @param int $width
-     * @return $this
+     *
      * @throws UnexpectedValueException
+     *
+     * @return $this
      */
     public function setImageWidth(int $width): self
     {
@@ -252,46 +269,52 @@ class Api
      * Returns URL to a static (non-interactive) Street View panorama or thumbnail.
      *
      * @param string $location
-     * @return string
+     *
      * @throws BadStatusCodeException
+     *
+     * @return string
      */
     public function getImageUrlByLocation(string $location): string
     {
         $parameters = $this->getRequestParameters([
-            'location' => $location
+            'location' => $location,
         ]);
 
         return $this->getImageUrl($parameters);
     }
 
     /**
-     * Returns URL to a static (non-interactive) Street View panorama or thumbnail
+     * Returns URL to a static (non-interactive) Street View panorama or thumbnail.
      *
      * @param float $latitude
      * @param float $longitude
-     * @return string
+     *
      * @throws BadStatusCodeException
+     *
+     * @return string
      */
     public function getImageUrlByLatitudeAndLongitude(float $latitude, float $longitude): string
     {
         $parameters = $this->getRequestParameters([
-            'location' => $latitude . ',' . $longitude
+            'location' => $latitude.','.$longitude,
         ]);
 
         return $this->getImageUrl($parameters);
     }
 
     /**
-     * Returns URL to a static (non-interactive) Street View panorama or thumbnail
+     * Returns URL to a static (non-interactive) Street View panorama or thumbnail.
      *
      * @param string $panoramaId
-     * @return string
+     *
      * @throws BadStatusCodeException
+     *
+     * @return string
      */
     public function getImageUrlByPanoramaId(string $panoramaId): string
     {
         $parameters = $this->getRequestParameters([
-            'pano' => $panoramaId
+            'pano' => $panoramaId,
         ]);
 
         return $this->getImageUrl($parameters);
@@ -302,18 +325,20 @@ class Api
      * The viewport is defined with URL parameters sent through a standard HTTP request, and is returned as a static image.
      *
      * @param array $parameters
-     * @return string
+     *
      * @throws BadStatusCodeException
+     *
+     * @return string
      */
     private function getImageUrl(array $parameters): string
     {
-        $uri = $this->endpointImage . '?' . http_build_query($parameters);
+        $uri = $this->endpointImage.'?'.http_build_query($parameters);
 
         $response = $this->client->get($uri);
 
         if ($response->getStatusCode() !== 200) {
             throw new BadStatusCodeException(
-                'Could not connect to ' . $this->endpointImage,
+                'Could not connect to '.$this->endpointImage,
                 $response->getStatusCode()
             );
         }
@@ -330,11 +355,13 @@ class Api
      * Street View API metadata requests are free to use. No quota is consumed when you request metadata.
      *
      * @param string $location
-     * @return array
+     *
      * @throws UnexpectedValueException
      * @throws RequestException
      * @throws BadStatusCodeException
      * @throws UnexpectedStatusException
+     *
+     * @return array
      */
     public function getMetadata(string $location): array
     {
@@ -352,13 +379,14 @@ class Api
             $response = $this->client->request('GET', $this->endpointMetadata, $payload);
         } catch (GuzzleException $e) {
             throw new RequestException(
-                'Guzzle http client request failed.', $e
+                'Guzzle http client request failed.',
+                $e
             );
         }
 
         if ($response->getStatusCode() !== 200) {
             throw new BadStatusCodeException(
-                'Could not connect to ' . $this->endpointMetadata,
+                'Could not connect to '.$this->endpointMetadata,
                 $response->getStatusCode()
             );
         }
@@ -406,7 +434,7 @@ class Api
         }
 
         throw new UnexpectedStatusException(
-            'Google Street view respond an unknown status response : "' . $status . '".'
+            'Google Street view respond an unknown status response : "'.$status.'".'
         );
     }
 
@@ -417,7 +445,7 @@ class Api
             'lng'           => $response->location->lng,
             'date'          => $response->date,
             'copyright'     => $response->copyright,
-            'panoramaId'    => $response->pano_id
+            'panoramaId'    => $response->pano_id,
         ];
     }
 
@@ -430,11 +458,11 @@ class Api
     {
         $defaultParameters = [
             'key'       => $this->apiKey,
-            'size'      => $this->imageWidth . 'x' . $this->imageHeight,
+            'size'      => $this->imageWidth.'x'.$this->imageHeight,
             'fov'       => $this->cameraFov,
             'pitch'     => $this->cameraPitch,
             'radius'    => $this->radius,
-            'source'    => $this->source
+            'source'    => $this->source,
         ];
 
         // optional parameters which have not default value
@@ -447,5 +475,4 @@ class Api
 
         return array_merge($defaultParameters, $parameters);
     }
-
 }

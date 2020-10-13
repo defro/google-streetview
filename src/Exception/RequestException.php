@@ -8,7 +8,8 @@ class RequestException extends \RuntimeException
 {
     /**
      * RequestException constructor.
-     * @param string $message
+     *
+     * @param string                          $message
      * @param \Throwable|GuzzleException|null $previous
      */
     public function __construct(string $message, \Throwable $previous = null)

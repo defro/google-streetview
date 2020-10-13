@@ -2,9 +2,9 @@
 
 namespace Defro\Google\StreetView\Tests;
 
+use Defro\Google\StreetView\Api;
 use Defro\Google\StreetView\Exception\UnexpectedValueException;
 use GuzzleHttp\Client;
-use Defro\Google\StreetView\Api;
 
 class StreetViewAccessorsTest extends \PHPUnit\Framework\TestCase
 {
