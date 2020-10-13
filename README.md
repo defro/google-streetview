@@ -3,7 +3,7 @@
 [![Latest Version](https://img.shields.io/github/release/defro/google-streetview.svg?style=flat-square)](https://github.com/defro/google-streetview/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Build Status](https://img.shields.io/travis/defro/google-streetview/master.svg?style=flat-square)](https://travis-ci.org/defro/google-streetview)
-[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/bb4e1360-2e06-4b1f-8c6f-57d99f2dafd9.svg?style=flat-square)](https://insight.sensiolabs.com/projects/bb4e1360-2e06-4b1f-8c6f-57d99f2dafd9)
+[![SymfonyInsight](https://insight.symfony.com/projects/ddc29c00-efed-47f3-aa44-8b5b086a1d6b/mini.svg)](https://insight.symfony.com/projects/ddc29c00-efed-47f3-aa44-8b5b086a1d6b)
 [![StyleCI](https://styleci.io/repos/156726302/shield)](https://styleci.io/repos/156726302)
 [![Total Downloads](https://img.shields.io/packagist/dt/defro/google-streetview.svg?style=flat-square)](https://packagist.org/packages/defro/google-streetview)
 
