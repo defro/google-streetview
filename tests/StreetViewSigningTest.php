@@ -2,9 +2,8 @@
 
 namespace Defro\Google\StreetView\Tests;
 
-use Defro\Google\StreetView\Exception\UnexpectedValueException;
-use GuzzleHttp\Client;
 use Defro\Google\StreetView\Api;
+use GuzzleHttp\Client;
 
 class StreetViewSigningTest extends \PHPUnit\Framework\TestCase
 {
@@ -21,7 +20,7 @@ class StreetViewSigningTest extends \PHPUnit\Framework\TestCase
         $streetView = new Api(new Client());
         $streetView->setSigningSecret('aaa');
         $result = $streetView->generateSignature('https://maps.googleapis.com/maps/api/streetview', [
-            'location' => 'test'
+            'location' => 'test',
         ]);
         $this->assertSame($result, 'xkEwlZTZ83QCDJB3dL9yDRK8KRs=');
     }
