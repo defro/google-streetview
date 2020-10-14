@@ -26,6 +26,7 @@
 
     },
     "require-dev": {
+        "ext-xdebug": "*",
         "phpunit/phpunit": "^7.4",
         "vlucas/phpdotenv": "^2.4"
     },
