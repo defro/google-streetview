@@ -32,6 +32,9 @@ class Api
     /** @var string */
     private $signature;
 
+    /** @var string */
+    private $signingSecret;
+
     /** @var int */
     private $imageWidth = 600;
 
@@ -87,6 +90,20 @@ class Api
     public function setSignature(string $signature): self
     {
         $this->signature = $signature;
+
+        return $this;
+    }
+
+    /**
+     * Used in conjunction with an API key, a URL signing secret can tag API requests with a higher degree of security.
+     * Providing a signing secret will automatically generate digital signatures for subsequent requests.
+     *
+     * @param string $secret Base64 encoded signing secret
+     * @return $this
+     */
+    public function setSigningSecret(string $secret): self
+    {
+        $this->signingSecret = $this->decodeModifiedBase64($secret);
 
         return $this;
     }
@@ -332,6 +349,10 @@ class Api
      */
     private function getImageUrl(array $parameters): string
     {
+        if (empty($parameters['signature']) && $this->signingSecret) {
+            $parameters['signature'] = $this->generateSignature($this->endpointImage, $parameters);
+        }
+
         $uri = $this->endpointImage.'?'.http_build_query($parameters);
 
         $response = $this->client->get($uri);
@@ -373,7 +394,13 @@ class Api
             );
         }
 
-        $payload = $this->getRequestPayload(compact('location'));
+        $parameters = $this->getRequestParameters(compact('location'));
+
+        if (empty($parameters['signature']) && $this->signingSecret) {
+            $parameters['signature'] = $this->generateSignature($this->endpointMetadata, $parameters);
+        }
+
+        $payload = ['query' => http_build_query($parameters)];
 
         try {
             $response = $this->client->request('GET', $this->endpointMetadata, $payload);
@@ -449,11 +476,6 @@ class Api
         ];
     }
 
-    private function getRequestPayload(array $parameters): array
-    {
-        return ['query' => $this->getRequestParameters($parameters)];
-    }
-
     private function getRequestParameters(array $parameters): array
     {
         $defaultParameters = [
@@ -475,4 +497,51 @@ class Api
 
         return array_merge($defaultParameters, $parameters);
     }
+
+    /**
+     * Encode a string to URL-safe base64
+     *
+     * @param string $value
+     * @return string
+     */
+    private function encodeModifiedBase64(string $value): string
+    {
+        return str_replace(['+', '/'], ['-', '_'], base64_encode($value));
+    }
+
+    /**
+     * Decode a string from URL-safe base64
+     *
+     * @param string $value
+     * @return string
+     */
+    private function decodeModifiedBase64(string $value): string
+    {
+        return base64_decode(str_replace(['-', '_'], ['+', '/'], $value));
+    }
+
+    /**
+     * Sign a URL with the current signing secret
+     *
+     * @param string $url A valid URL that is properly URL-encoded
+     * @param array $parameters Parameters to include in the URL
+     * @return string
+     */
+    public function generateSignature(string $url, ?array $parameters = null): string
+    {
+        $url = parse_url($url);
+
+        if (!is_null($parameters)) {
+            $url['query'] = http_build_query($parameters);
+        }
+
+        $signable = $url['path'] . '?' . $url['query'];
+
+        // Generate binary signature
+        $signature = hash_hmac('sha1', $signable, $this->signingSecret, true);
+
+        // Encode signature into base64
+        return $this->encodeModifiedBase64($signature);
+    }
+
 }
