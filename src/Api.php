@@ -502,7 +502,7 @@ class Api
     public function generateSignature(string $url, ?array $parameters = null): string
     {
         $url = parse_url($url);
-        if (isset($parameters)) {
+        if (is_null($parameters)) {
             $url['query'] = http_build_query($parameters);
         }
 
