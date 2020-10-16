@@ -7,7 +7,7 @@
 # Unit test
 # docker run -it --rm --name google-street-view -v "$PWD":/application -w /application google-street-view vendor/bin/phpunit
 
-FROM php:7.4-fpm
+FROM php:7.1-fpm
 
 # Install zip
 RUN apt-get update && apt-get install -y zip
