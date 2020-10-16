@@ -99,6 +99,7 @@ class Api
      * Providing a signing secret will automatically generate digital signatures for subsequent requests.
      *
      * @param string $secret Base64 encoded signing secret
+     *
      * @return $this
      */
     public function setSigningSecret(string $secret): self
@@ -499,9 +500,10 @@ class Api
     }
 
     /**
-     * Encode a string to URL-safe base64
+     * Encode a string to URL-safe base64.
      *
      * @param string $value
+     *
      * @return string
      */
     private function encodeModifiedBase64(string $value): string
@@ -510,9 +512,10 @@ class Api
     }
 
     /**
-     * Decode a string from URL-safe base64
+     * Decode a string from URL-safe base64.
      *
      * @param string $value
+     *
      * @return string
      */
     private function decodeModifiedBase64(string $value): string
@@ -521,10 +524,11 @@ class Api
     }
 
     /**
-     * Sign a URL with the current signing secret
+     * Sign a URL with the current signing secret.
      *
-     * @param string $url A valid URL that is properly URL-encoded
-     * @param array $parameters Parameters to include in the URL
+     * @param string $url        A valid URL that is properly URL-encoded
+     * @param array  $parameters Parameters to include in the URL
+     *
      * @return string
      */
     public function generateSignature(string $url, ?array $parameters = null): string
@@ -535,7 +539,7 @@ class Api
             $url['query'] = http_build_query($parameters);
         }
 
-        $signable = $url['path'] . '?' . $url['query'];
+        $signable = $url['path'].'?'.$url['query'];
 
         // Generate binary signature
         $signature = hash_hmac('sha1', $signable, $this->signingSecret, true);
@@ -543,5 +547,4 @@ class Api
         // Encode signature into base64
         return $this->encodeModifiedBase64($signature);
     }
-
 }
