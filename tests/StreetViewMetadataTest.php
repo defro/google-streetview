@@ -27,7 +27,7 @@ class StreetViewMetadataTest extends \PHPUnit\Framework\TestCase
 
     public function testGetMetadataStatusBadStatusCodeException()
     {
-        $response = new Response(0);
+        $response = new Response(500);
         $client = $this->createMock(Client::class);
         $client->method('request')->willReturn($response);
 
@@ -41,7 +41,7 @@ class StreetViewMetadataTest extends \PHPUnit\Framework\TestCase
     {
         $client = $this->createMock(Client::class);
         $client->method('request')->willThrowException(
-            new \GuzzleHttp\Exception\RequestException('', new Request('', ''))
+            new \GuzzleHttp\Exception\RequestException('', new Request('GET', ''))
         );
 
         $streetView = new Api($client);

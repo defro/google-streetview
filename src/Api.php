@@ -23,7 +23,7 @@ class Api
     /** @var string */
     private $endpointMetadata = 'https://maps.googleapis.com/maps/api/streetview/metadata';
 
-    /** @var \GuzzleHttp\Client */
+    /** @var Client */
     private $client;
 
     /** @var string */

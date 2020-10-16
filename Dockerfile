@@ -1,7 +1,7 @@
 # First step: build container
 # docker build -t google-street-view .
 # Second step: install dependencies with composer
-# docker run -it --rm --name google-street-view -v "$PWD":/application -w /application google-street-view php /usr/bin/composer update
+# docker run -it --rm --name google-street-view -v "$PWD":/application -w /application google-street-view php /usr/bin/composer install
 # Last step: launch example
 # docker run -it --rm --name google-street-view -v "$PWD":/application -w /application google-street-view php example.php
 # Unit test

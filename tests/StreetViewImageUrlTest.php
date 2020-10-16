@@ -23,7 +23,7 @@ class StreetViewImageUrlTest extends \PHPUnit\Framework\TestCase
 
     public function testGetImageUrlBadStatusCodeException()
     {
-        $streetView = $this->getApi(0);
+        $streetView = $this->getApi(500);
         $this->expectException(BadStatusCodeException::class);
         $streetView->getImageUrlByLocation('Location name');
     }
