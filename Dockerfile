@@ -36,3 +36,5 @@ ENV COMPOSER_HOME /var/composer
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_VENDOR_DIR vendor-docker
 RUN /usr/bin/composer install
+
+EXPOSE 80
