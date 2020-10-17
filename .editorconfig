@@ -13,3 +13,7 @@ trim_trailing_whitespace = true
 
 [*.md]
 trim_trailing_whitespace = false
+
+[{*.twig, *.html}]
+trim_trailing_whitespace = false
+indent_size = 2

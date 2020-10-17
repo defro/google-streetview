@@ -1,19 +1,17 @@
 <?php
 /**
- * Test this example by executing:
- * php -S localhost:2626
- * Open your favorite browser and go to http://localhost:2626/example.php
- * OR
- * Print it on stdout using CLI client:
- * $ docker build -t google-street-view . && \
- *     docker run -it --rm --name google-street-view -v "$PWD":/application google-street-view php example/index.php
+ * Test it with Dockerfile provided:
+ * $ docker run -it --rm --name google-street-view -v "$(pwd)/example":/application/example -v "$(pwd)/src":/application/src -p 8080:80 google-street-view
+ * Open your browser and go to http://localhost:8080/
+ *
+ * Bonus: launch example wth CLI interpreter
+ * $ docker run -it --rm --name google-street-view -v "$(pwd)/example":/application/example -v "$(pwd)/src":/application/src google-street-view php example/index.php
  *
  */
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
-$vendorDir = getenv('COMPOSER_VENDOR_DIR') ?: 'vendor';
-require_once __DIR__.'/../'.$vendorDir.'/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 /**
  * You can customize this value to test it.
@@ -22,6 +20,12 @@ $imageWidth = 400;
 $imageHeight = 400;
 $locationName = 'Forbidden City, Beijing, China';
 //$locationName = 'A place which not exists';
+
+if (!empty($_GET)) {
+    $locationName = !empty($_GET['location_name'])
+        ? htmlspecialchars(stripslashes(trim($_GET['location_name'])))
+        : $locationName;
+}
 
 use Defro\Google\StreetView\Api;
 
@@ -44,7 +48,6 @@ $streetView
     ->setImageHeight($imageHeight);
 
 $print = [
-    '<h1>Google Street view example</h1>',
     '<h2>Handle location: "'.$locationName.'"</h2>',
 ];
 
@@ -102,7 +105,10 @@ if (PHP_SAPI === 'cli') {
 } else {
     $loader = new \Twig\Loader\FilesystemLoader(__DIR__);
     $twig = new \Twig\Environment($loader);
-    echo $twig->render('index.twig', ['result' => webPrinter($print)]);
+    echo $twig->render('index.twig', [
+        'result' => webPrinter($print),
+        'locationName' => $locationName,
+    ]);
 }
 
 function cliPrinter($print, $indentationLevel = 0)
