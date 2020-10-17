@@ -4,10 +4,11 @@
  * php -S localhost:2626
  * Open your favorite browser and go to http://localhost:2626/example.php
  * OR
- * Print it on stdout using CLI client
- * docker build -t google-street-view . && docker run -it --rm --name google-street-view -v "$PWD":/application google-street-view php example.php
+ * Print it on stdout using CLI client:
+ * $ docker build -t google-street-view . && \
+ *     docker run -it --rm --name google-street-view -v "$PWD":/application google-street-view php example/index.php
+ *
  */
-
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
@@ -133,6 +134,7 @@ function webPrinter($print, $isList = false)
         $message = $isList ? '<li>'.$message.'</li>' : $message;
         $return .= is_numeric($title) ? $message : '<h3>'.$title.'</h3><p>'.$message.'</p>';
     }
+
     return $return;
 }
 
