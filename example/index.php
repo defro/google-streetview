@@ -15,7 +15,7 @@ $vendorDir = getenv('COMPOSER_VENDOR_DIR') ?: 'vendor';
 require_once __DIR__.'/../'.$vendorDir.'/autoload.php';
 
 /**
- * You can customize this value to test it
+ * You can customize this value to test it.
  */
 $imageWidth = 400;
 $imageHeight = 400;
@@ -38,8 +38,7 @@ $streetView = new Api($client);
 $streetView
     ->setApiKey($apiKey)
     ->setImageWidth($imageWidth)
-    ->setImageHeight($imageHeight)
-;
+    ->setImageHeight($imageHeight);
 
 $print = [
     '<h1>Google Street view example</h1>',
@@ -107,7 +106,8 @@ if (PHP_SAPI === 'cli') {
     echo '</body></html>';
 }
 
-function cliPrinter($print, $indentationLevel = 0) {
+function cliPrinter($print, $indentationLevel = 0)
+{
     $indentation = str_repeat(' ', $indentationLevel * 2);
     foreach ($print as $key => $message) {
         if (is_array($message)) {
@@ -122,7 +122,8 @@ function cliPrinter($print, $indentationLevel = 0) {
     }
 }
 
-function webPrinter($print, $isList = false) {
+function webPrinter($print, $isList = false)
+{
     $return = '';
     foreach ($print as $title => $message) {
         if (is_array($message)) {
@@ -130,10 +131,7 @@ function webPrinter($print, $isList = false) {
             continue;
         }
         $message = $isList ? '<li>'.$message.'</li>' : $message;
-        $return .= is_numeric($title)
-            ? $message
-            : '<h3>'.$title.'</h3><p>'.$message.'</p>'
-        ;
+        $return .= is_numeric($title) ? $message : '<h3>'.$title.'</h3><p>'.$message.'</p>';
     }
     return $return;
 }

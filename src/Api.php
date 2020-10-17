@@ -378,12 +378,12 @@ class Api
      *
      * @param string $location
      *
-     * @return array|null
-     *
      * @throws RequestException
      * @throws BadStatusCodeException
      * @throws UnexpectedStatusException
      * @throws UnexpectedValueException
+     *
+     * @return array|null
      */
     public function getMetadata(string $location): ?array
     {
@@ -472,7 +472,7 @@ class Api
     }
 
     /**
-     * Formatter of metadata endpoint response
+     * Formatter of metadata endpoint response.
      *
      * @param $response
      *
@@ -538,7 +538,7 @@ class Api
     /**
      * Sign a URL with the current signing secret.
      *
-     * @param string $url A valid URL that is properly URL-encoded
+     * @param string     $url        A valid URL that is properly URL-encoded
      * @param array|null $parameters Parameters to include in the URL
      *
      * @return string
