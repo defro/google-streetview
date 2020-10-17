@@ -1,14 +1,15 @@
 # First step: build container
 # docker build -t google-street-view .
 #
-# Second step: install dependencies with composer
-# docker run -it --rm --name google-street-view -v "$PWD":/application -w /application google-street-view php /usr/bin/composer install
-#
 # Last step: launch example
-# docker run -it --rm --name google-street-view -v "$PWD":/application -w /application google-street-view php example.php
+# docker run -it --rm --name google-street-view -v "$(pwd)/example":/application/example -v "$(pwd)/src":/application/src -p 8080:80 google-street-view
+# Open your browser and go to http://localhost:8080/
+#
+# Bonus: launch example wth CLI interpreter
+# docker run -it --rm --name google-street-view -v "$(pwd)/example":/application/example -v "$(pwd)/src":/application/src google-street-view php example/index.php
 #
 # Unit test
-# docker run -it --rm --name google-street-view -v "$PWD":/application -w /application google-street-view vendor/bin/phpunit
+# docker run -it --rm --name google-street-view -v "$(pwd)/src":/application/src -v "$PWD/tests":/application/tests google-street-view vendor/bin/phpunit
 
 FROM php:7.2-apache
 
@@ -34,7 +35,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN mkdir /var/composer
 ENV COMPOSER_HOME /var/composer
 ENV COMPOSER_ALLOW_SUPERUSER 1
-ENV COMPOSER_VENDOR_DIR vendor-docker
-RUN /usr/bin/composer install
+RUN /usr/bin/composer install --prefer-dist
 
 EXPOSE 80
