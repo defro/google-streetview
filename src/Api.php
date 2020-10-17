@@ -12,10 +12,10 @@ use GuzzleHttp\Exception\GuzzleException;
 class Api
 {
     /** @var string default source */
-    const SOURCE_DEFAULT = 'default';
+    public const SOURCE_DEFAULT = 'default';
 
     /** @var string outdoor source */
-    const SOURCE_OUTDOOR = 'outdoor';
+    public const SOURCE_OUTDOOR = 'outdoor';
 
     /** @var string */
     private $endpointImage = 'https://maps.googleapis.com/maps/api/streetview';
@@ -54,7 +54,7 @@ class Api
     private $radius = 50;
 
     /** @var string */
-    private $source = 'default';
+    private $source = self::SOURCE_DEFAULT;
 
     /**
      * Api constructor.
@@ -378,14 +378,14 @@ class Api
      *
      * @param string $location
      *
-     * @throws UnexpectedValueException
+     * @return array|null
+     *
      * @throws RequestException
      * @throws BadStatusCodeException
      * @throws UnexpectedStatusException
-     *
-     * @return array
+     * @throws UnexpectedValueException
      */
-    public function getMetadata(string $location): array
+    public function getMetadata(string $location): ?array
     {
         $location = trim($location);
 
@@ -419,7 +419,7 @@ class Api
             );
         }
 
-        $response = json_decode($response->getBody());
+        $response = json_decode($response->getBody(), false);
 
         // Indicates that no panorama could be found near the provided location.
         // Indicates that no errors occurred; a panorama is found and metadata is returned.
@@ -428,9 +428,14 @@ class Api
         }
 
         $this->handleResponseStatus($response->status);
+
+        return null;
     }
 
-    private function handleResponseStatus(string $status)
+    /**
+     * @param string $status
+     */
+    private function handleResponseStatus(string $status): void
     {
         // This may occur if a non-existent or invalid panorama ID is given.
         if ($status === 'ZERO_RESULTS') {
@@ -466,7 +471,14 @@ class Api
         );
     }
 
-    protected function formatMetadataResponse($response): array
+    /**
+     * Formatter of metadata endpoint response
+     *
+     * @param $response
+     *
+     * @return array
+     */
+    private function formatMetadataResponse($response): array
     {
         return [
             'lat'           => $response->location->lat,
@@ -526,23 +538,23 @@ class Api
     /**
      * Sign a URL with the current signing secret.
      *
-     * @param string $url        A valid URL that is properly URL-encoded
-     * @param array  $parameters Parameters to include in the URL
+     * @param string $url A valid URL that is properly URL-encoded
+     * @param array|null $parameters Parameters to include in the URL
      *
      * @return string
      */
     public function generateSignature(string $url, ?array $parameters = null): string
     {
-        $url = parse_url($url);
+        $urlParsed = parse_url($url);
 
         if (!is_null($parameters)) {
-            $url['query'] = http_build_query($parameters);
+            $urlParsed['query'] = http_build_query($parameters);
         }
 
-        $signable = $url['path'].'?'.$url['query'];
+        $url = $urlParsed['path'].'?'.$urlParsed['query'];
 
         // Generate binary signature
-        $signature = hash_hmac('sha1', $signable, $this->signingSecret, true);
+        $signature = hash_hmac('sha1', $url, $this->signingSecret, true);
 
         // Encode signature into base64
         return $this->encodeModifiedBase64($signature);
