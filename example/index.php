@@ -25,8 +25,10 @@ $locationName = 'Forbidden City, Beijing, China';
 
 use Defro\Google\StreetView\Api;
 
-$dotEnv = new \Dotenv\Dotenv(__DIR__.'/../');
-$dotEnv->load();
+if (file_exists(__DIR__.'/.env')) {
+    $dotEnv = new \Dotenv\Dotenv(__DIR__);
+    $dotEnv->load();
+}
 
 $apiKey = getenv('GOOGLE_API_KEY');
 if (!$apiKey || empty($apiKey)) {
