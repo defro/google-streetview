@@ -100,13 +100,9 @@ try {
 if (PHP_SAPI === 'cli') {
     cliPrinter($print);
 } else {
-    echo '<html><head>';
-    echo '<title>Google street view API PHP example</title>';
-    echo '<link rel="icon" type="image/png" href="favicon.png" />';
-    echo '</head><body>';
-    echo webPrinter($print);
-    // TODO add a form to customize location name and other parameter
-    echo '</body></html>';
+    $loader = new \Twig\Loader\FilesystemLoader(__DIR__);
+    $twig = new \Twig\Environment($loader);
+    echo $twig->render('index.twig', ['result' => webPrinter($print)]);
 }
 
 function cliPrinter($print, $indentationLevel = 0)

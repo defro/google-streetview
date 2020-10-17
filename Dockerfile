@@ -10,7 +10,7 @@
 # Unit test
 # docker run -it --rm --name google-street-view -v "$PWD":/application -w /application google-street-view vendor/bin/phpunit
 
-FROM php:7.1-apache
+FROM php:7.2-apache
 
 MAINTAINER Joël Gaujard <j.gaujard@gmail.com>
 

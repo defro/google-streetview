@@ -1,12 +1,12 @@
-# Application
-/.env
-
-# Composer
-/vendor
-/composer.phar
-
 # IDE
 /.idea
 
 # OS
 .DS_Store
+
+# Composer
+/vendor
+/composer.phar
+
+# Example
+/example/.env
