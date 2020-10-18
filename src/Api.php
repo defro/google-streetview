@@ -42,7 +42,7 @@ class Api
     private $imageHeight = 600;
 
     /** @var int */
-    private $heading;
+    private $heading = 0;
 
     /** @var int */
     private $cameraFov = 90;
@@ -274,7 +274,7 @@ class Api
     {
         if ($width < 1) {
             throw new UnexpectedValueException(
-                'Image height value cannot be negative or equal to zero.'
+                'Image width value cannot be negative or equal to zero.'
             );
         }
 
