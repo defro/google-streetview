@@ -2,11 +2,10 @@
 /**
  * Test it with Dockerfile provided:
  * $ docker run -it --rm --name google-street-view -v "$(pwd)/example":/application/example -v "$(pwd)/src":/application/src -p 8080:80 google-street-view
- * Open your browser and go to http://localhost:8080/
+ * Open your browser and go to : http://localhost:8080/
  *
  * Bonus: launch example wth CLI interpreter
  * $ docker run -it --rm --name google-street-view -v "$(pwd)/example":/application/example -v "$(pwd)/src":/application/src google-street-view php example/index.php
- *
  */
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
@@ -106,8 +105,8 @@ if (PHP_SAPI === 'cli') {
     $loader = new \Twig\Loader\FilesystemLoader(__DIR__);
     $twig = new \Twig\Environment($loader);
     echo $twig->render('index.twig', [
-        'result' => webPrinter($print),
-        'locationName' => $locationName,
+        'result'        => webPrinter($print),
+        'locationName'  => $locationName,
     ]);
 }
 
