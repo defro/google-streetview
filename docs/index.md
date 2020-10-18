@@ -2,122 +2,60 @@
 layout: default
 ---
 
-Text can be **bold**, _italic_, or ~~strikethrough~~.
+This library writing in PHP make request easier to make API request to Google Street view API.
 
-[Link to another page](./another-page.html).
+# Installation
 
-There should be whitespace between paragraphs.
-
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
-
-# Header 1
-
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
-
-## Header 2
-
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
-
-### Header 3
-
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
+Use Composer to install this package as a requirement like this :
+```bash
+composer require defro/google-streetview
 ```
 
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
+# Usage
+
+## Initialization
+```php
+$client = new \GuzzleHttp\Client();
+$api = new \Defro\Google\StreetView\Api($client);
+$api->setApiKey('YOUR_GOOGLE_API_KEY');
 ```
 
-#### Header 4
-
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-
-##### Header 5
-
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
-
-###### Header 6
-
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
-
-### There's a horizontal rule below this.
-
-* * *
-
-### Here is an unordered list:
-
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
-
-### And an ordered list:
-
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-
-### Small image
-
-![Octocat](https://assets-cdn.github.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![Branching](https://guides.github.com/activities/hello-world/branching.png)
-
-
-### Definition lists can be used with HTML syntax.
-
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
-
-```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
+## Get image URL by location name
+```php
+$imgUrl = $api->getImageUrlByLocation('Eiffel tower, Paris');
 ```
 
+## Get image URL by latitude and longitude
+```php
+$imgUrl = $api->getImageUrlByLatitudeAndLongitude(48.8557346, 2.2976342);
 ```
-The final element.
+
+## Get image URL by panorama ID
+```php
+$imgUrl = $api->getImageUrlByPanoramaId('CAoSLEFGMVFpcFA1SEg3dzFteWloM1JIMy1aZFl3ejBLVFBad0J4UWU0RXRWUGNm');
 ```
+
+## Get metadata
+```php
+$metadata = $api->getMetadata('Forbidden City, Beijing, China');
+```
+
+# Customize it
+A lot of parameters is ready to be overwrite. _This example contains values set by default._
+```php
+$api
+    ->setImageWidth(600)
+    ->setImageHeight(600)
+    ->setCameraFov(90) // Determines the horizontal field of view of the image expressed in degrees
+    ->setCameraPitch(0) // Specifies the up or down angle of the camera relative to the Street View vehicle expressed in degrees
+    ->setHeading(0) // Indicates the compass heading of the camera. Accepted values are from 0 to 360
+    ->setRadius(50) // Sets a radius, specified in meters, in which to search for a panorama, centered on the given latitude and longitude.
+    ->setSource(\Defro\Google\StreetView\Api::SOURCE_OUTDOOR) // Limits Street View searches to selected sources. Valid values are: default or outdoor
+;
+```
+
+# Demonstration
+
+Go to [https://main-nd6rmpw9s9nzf7re-gtw.qovery.io/](https://main-nd6rmpw9s9nzf7re-gtw.qovery.io/)
+
+Many thanks to [Qovery](https://www.qovery.com/blog/qovery-is-free-for-open-source-projects) team.

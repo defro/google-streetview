@@ -23,8 +23,13 @@ echo '<img src="' . $imgUrl . '" />';
 
 ## Documentation
 
-Read to install, use this package, customize image to display on [documentation page](https://defro.github.io/google-streetview/).
+Read how to install, use this package, customize photo location to display on [documentation page](https://defro.github.io/google-streetview/).
 
+## Demonstration
+
+Go to [https://main-nd6rmpw9s9nzf7re-gtw.qovery.io/](https://main-nd6rmpw9s9nzf7re-gtw.qovery.io/)
+
+Many thanks to [Qovery](https://www.qovery.com/blog/qovery-is-free-for-open-source-projects) team.
 
 ## License
 
