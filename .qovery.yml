@@ -1,9 +1,9 @@
 application:
-  name: google-street-view
-  project: google-street-view
+  name: google-streetview
+  project: google-streetview
 routers:
 - name: main
   routes:
-  - application_name: google-street-view
+  - application_name: google-streetview
     paths:
     - /
