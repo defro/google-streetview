@@ -8,10 +8,10 @@ use GuzzleHttp\Client;
 
 class StreetViewAccessorsTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var \Defro\Google\StreetView\Api */
+    /** @var Api */
     protected $streetView;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

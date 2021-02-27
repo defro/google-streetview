@@ -12,10 +12,10 @@ class StreetViewImageUrlTest extends \PHPUnit\Framework\TestCase
     private function getApi(int $statusCode)
     {
         $response = new Response($statusCode);
+
         $client = $this->createMock(Client::class);
         $client
-            ->method('__call')
-            ->with($this->equalTo('get'))
+            ->method('get')
             ->willReturn($response);
 
         return new Api($client);
