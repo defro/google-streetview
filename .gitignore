@@ -9,5 +9,8 @@
 /composer.lock
 /composer.phar
 
+# PHPUnit
+/.phpunit.result.cache
+
 # Example
 /example/.env

@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
   <title>Google street view API PHP example</title>
   <link rel="icon" type="image/png" href="favicon.png"/>
@@ -9,21 +9,20 @@
 <nav class="light-blue lighten-1" role="navigation">
   <div class="nav-wrapper container">
     <a id="logo-container" href="#" class="brand-logo">
-      Google street view example
+      Google street view example script
     </a>
   </div>
 </nav>
-
 <div class="section no-pad-bot" id="index-banner">
   <div class="container">
     <div class="row">
       <div class="col s12">
         <ul class="tabs" id="tabs">
-          <li class="tab col s3">
+          <li class="tab col s6">
             <a href="#tab-result">Result</a>
           </li>
-          <li class="tab col s3">
-            <a href="#tab-form">Test a location</a>
+          <li class="tab col s6">
+            <a href="#tab-form">Try another location</a>
           </li>
         </ul>
       </div>
@@ -32,7 +31,13 @@
         <form class="col s12" action="#" method="get">
           <div class="row">
             <div class="input-field col s12">
-              <input placeholder="Forbidden City, Beijing, China" id="location_name" name="location_name" type="text" class="validate" value="{{ locationName }}">
+              <input type="text"
+                     placeholder="Forbidden City, Beijing, China"
+                     value="{{ locationName }}"
+                     id="location_name"
+                     name="location_name"
+                     class="validate"
+              />
               <label for="location_name">Location name</label>
             </div>
           </div>
@@ -48,7 +53,7 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script type="text/javascript">
-  var instance = M.Tabs.init(document.getElementById('tabs'));
+  const instance = M.Tabs.init(document.getElementById('tabs'));
 </script>
 </body>
 </html>

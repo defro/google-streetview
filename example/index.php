@@ -1,16 +1,14 @@
 <?php
 /**
- * Test it with Dockerfile provided:
- * $ docker run -it --rm --name google-street-view -v "$(pwd)/example":/application/example -v "$(pwd)/src":/application/src -p 8080:80 google-street-view
- * Open your browser and go to : http://localhost:8080
- *
- * Bonus: launch example wth CLI interpreter
- * $ docker run -it --rm --name google-street-view -v "$(pwd)/example":/application/example -v "$(pwd)/src":/application/src google-street-view php example/index.php
+ * Test it with Dockerfile provided, read documentation: docs/docker.md
  */
+
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
 require_once __DIR__.'/../vendor/autoload.php';
+
+use Defro\Google\StreetView\Api;
 
 /**
  * You can customize this value to test it.
@@ -25,8 +23,6 @@ if (!empty($_GET)) {
         ? htmlspecialchars(stripslashes(trim($_GET['location_name'])))
         : $locationName;
 }
-
-use Defro\Google\StreetView\Api;
 
 if (file_exists(__DIR__.'/.env')) {
     $dotEnv = new \Dotenv\Dotenv(__DIR__);
@@ -54,13 +50,13 @@ try {
     $imgUrl = $streetView->getImageUrlByLocation($locationName);
     $searchUrl = 'https://www.google.com/maps/search/?api=1&query=';
     $searchUrl .= urlencode($locationName);
-    $print['Display image url by location name'] = [
+    $print['Image url by location name'] = [
         '<img src="'.$imgUrl.'" alt="'.$locationName.'" />',
         'Image URL : <a href="'.$imgUrl.'">'.$imgUrl.'</a>',
         'Search URL : <a href="'.$searchUrl.'">'.$searchUrl.'</a>',
     ];
 } catch (Exception $e) {
-    $print['Display image url by location name'] = 'Error when get image url by location name : '.$e->getMessage();
+    $print['Image url by location name'] = 'Error when get image url by location name : '.$e->getMessage();
 }
 
 try {
@@ -77,26 +73,26 @@ try {
     $imgUrl = $streetView->getImageUrlByPanoramaId($metadata['panoramaId']);
     $searchUrl = 'https://www.google.com/maps/@?api=1&map_action=pano&pano=';
     $searchUrl .= $metadata['panoramaId'];
-    $print['Display image url by panorama ID'] = [
+    $print['Image url by panorama ID'] = [
         '<img src="'.$imgUrl.'" alt="'.$locationName.'" />',
         'Image URL : <a href="'.$imgUrl.'">'.$imgUrl.'</a>',
         'Search URL : <a href="'.$searchUrl.'">'.$searchUrl.'</a>',
     ];
 } catch (Exception $e) {
-    $print['Display image url by panorama ID'] = 'Error when get image url by panorama ID : '.$e->getMessage();
+    $print['Image url by panorama ID'] = 'Error when get image url by panorama ID : '.$e->getMessage();
 }
 
 try {
     $imgUrl = $streetView->getImageUrlByLatitudeAndLongitude($metadata['lat'], $metadata['lng']);
     $searchUrl = 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=';
     $searchUrl .= $metadata['lat'].','.$metadata['lng'];
-    $print['Display image url by latitude and longitude'] = [
+    $print['Image url by latitude and longitude'] = [
         '<img src="'.$imgUrl.'" alt="'.$locationName.'" />',
         'Image URL : <a href="'.$imgUrl.'">'.$imgUrl.'</a>',
         'Search URL : <a href="'.$searchUrl.'">'.$searchUrl.'</a>',
     ];
 } catch (Exception $e) {
-    $print['Display image url by latitude and longitude'] = 'Error when get image url by latitude and longitude : '.$e->getMessage();
+    $print['Image url by latitude and longitude'] = 'Error when get image url by latitude and longitude : '.$e->getMessage();
 }
 
 if (PHP_SAPI === 'cli') {

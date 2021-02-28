@@ -41,7 +41,7 @@ $metadata = $api->getMetadata('Forbidden City, Beijing, China');
 ```
 
 # Customize it
-A lot of parameters is ready to be overwrite. _This example contains values set by default._
+A lot of parameters is ready to be overwritten. _This example contains values set by default._
 ```php
 $api
     ->setImageWidth(600)
