@@ -1,18 +1,18 @@
 <?php
 /**
- * Example script to test Google Street View client
+ * Example script to test Google Street View client.
  *
  * Test it with Dockerfile provided, please read documentation...
  *
  * @category   Example
- * @package    GoogleStreetView
+ *
  * @author     Joël Gaujard <j.gaujard@gmail.com>
  * @copyright  2018 Joël Gaujard
  * @license    MIT https://github.com/defro/google-streetview/blob/master/LICENSE
+ *
  * @link       https://defro.github.io/google-streetview/docker.html
  * @see        docs/docker.md
  */
-
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
