@@ -8,6 +8,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/defro/google-streetview/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/defro/google-streetview/?branch=master)
 [![StyleCI](https://styleci.io/repos/156726302/shield)](https://styleci.io/repos/156726302)
 [![Total Downloads](https://img.shields.io/packagist/dt/defro/google-streetview.svg?style=flat-square)](https://packagist.org/packages/defro/google-streetview)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MSER6KJHQM9NS)
 
 This package can get street view image from any address to GPS coordinates, location or panorama ID using [Google's street view service](https://developers.google.com/maps/documentation/streetview/intro). Here's a quick example:
 
