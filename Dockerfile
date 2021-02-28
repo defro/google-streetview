@@ -16,14 +16,16 @@ ENV APACHE_DOCUMENT_ROOT /application/example
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# Access to source code
+COPY . /application
+VOLUME /application
+WORKDIR /application
+
 # Install composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN mkdir /var/composer
 ENV COMPOSER_HOME /var/composer
 ENV COMPOSER_ALLOW_SUPERUSER 1
-
-# Access to source code
-VOLUME /application
-WORKDIR /application
+RUN /usr/bin/composer install --prefer-dist
 
 EXPOSE 80
