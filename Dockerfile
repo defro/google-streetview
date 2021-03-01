@@ -18,7 +18,6 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 # Access to source code
 COPY . /application
-VOLUME /application
 WORKDIR /application
 
 # Install composer
