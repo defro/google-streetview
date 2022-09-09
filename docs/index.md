@@ -54,12 +54,6 @@ $api
 ;
 ```
 
-# Demonstration
-
-Go to [https://main-nd6rmpw9s9nzf7re-gtw.qovery.io/](https://main-nd6rmpw9s9nzf7re-gtw.qovery.io/)
-
-Many thanks to [Qovery](https://www.qovery.com/blog/qovery-is-free-for-open-source-projects) team.
-
 # Run it locally in a Docker container
 
 You can run example script and unit tests in included Docker container, [read how to do it](./docker.md).

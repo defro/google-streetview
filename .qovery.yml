@@ -1,9 +1,0 @@
-application:
-  name: google-streetview
-  project: google-streetview
-routers:
-- name: main
-  routes:
-  - application_name: google-streetview
-    paths:
-    - /
